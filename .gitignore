@@ -1,0 +1,5 @@
+test_flash
+bench_flash
+*.o
+*.out
+a.out
