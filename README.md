@@ -97,7 +97,6 @@ At T = 4096, the kernel sustains ~4.7 TFLOP/s. The 4090 performs ~83 TFLOP/s, so
 | `flash_cpu.cpp` | `test_flash.cu` |
 | `basekernel.cu` | `bench_flash.cu` |
 | `flashattention.cu` | `Makefile` |
-| | This README |
 
 Every kernel in this repo is mine, completely. The tests and benchmarks were built with AI assistance.
 
