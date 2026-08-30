@@ -11,7 +11,7 @@
 // scores for the query row you are working on.
 //
 // Change 2: Consume the block immediately, then throw it away.
-// Do not store the scores. Fold them straight into a running output accumular O_acc
+// Do not store the scores. Fold them straight into a running output accumulator O_acc
 // and discard.
 //
 // Change 3: Online softmax, to make change 2 legal.
@@ -50,7 +50,7 @@ void flashAttention(float* Q, float* K, float* V, float* O, int T)
     float max = -INFINITY; // records the highest value measured
     float l = 0.0f; // stores the sum of e^(score - m) scores
 
-    float QS[D]; // shared memory float for Q matrix
+    float QS[D]; // per-thread register array for Q matrix
 
     // loads Q into shared memory array
     if ((bx*BR + tx) < T)
@@ -61,7 +61,7 @@ void flashAttention(float* Q, float* K, float* V, float* O, int T)
         }
     }
 
-    float acc[D] {0.0f}; // stores the two outputs
+    float acc[D] {0.0f}; // 64-element output accumulator
     float score[BC]; // stores scores
 
     // iterates over all batches
