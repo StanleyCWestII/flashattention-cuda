@@ -80,6 +80,8 @@ The 130x is against my own naive kernel, not against a real implementation. The 
 
 At T = 4096, the kernel sustains ~4.7 TFLOP/s. The 4090 performs ~83 TFLOP/s, so `flashattention.cu` sits at ~6% of peak. Real FlashAttention implements tensor cores and half precision, which I did not touch. These techniques are outside of my current knowledge base, but I do want to learn them soon.
 
+83 TFLOP/s is not the right ceiling for this kernel shape, though. Both inner loops (`flashattention.cu:91` and `:122`) do one shared-memory read per multiply-add. Per SM per cycle, Ada issues 128 FP32 FMAs but only 32 shared loads, so a loop with one load per FMA runs at most 1/4 of peak, which is about 21 TFLOP/s. That makes the realistic ceiling for this design near 20 TFLOP/s, and 4.7 is about 22% of it. This is a static estimate from the instruction mix. I have not confirmed it with Nsight Compute.
+
 ## 7. Limitations
 
 - **No 2D tiling.** One thread per query row is the single biggest limiter. Each thread carries a 64-float accumulator, which is what drives registers to 252 and occupancy to 17%. 
